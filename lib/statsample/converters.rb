@@ -118,25 +118,27 @@ module Statsample
     
     end
   end
-    class PlainText < SpreadsheetBase
-      class << self
-        def read(filename, fields)
-          ds=Statsample::Dataset.new(fields)
-          fp=File.open(filename,"r")
-          fp.each_line do |line|
-            row=process_row(line.strip.split(/\s+/),[""])
-            next if row==["\x1A"]
-            ds.add_case_array(row)
-          end
-          convert_to_scale_and_date(ds,fields)
-          ds.update_valid_data
-          fields.each {|f|
-            ds[f].name=f
-          }
-          ds
+
+  class PlainText < SpreadsheetBase
+    class << self
+      def read(filename, fields)
+        ds=Statsample::Dataset.new(fields)
+        fp=File.open(filename,"r")
+        fp.each_line do |line|
+          row=process_row(line.strip.split(/\s+/),[""])
+          next if row==["\x1A"]
+          ds.add_case_array(row)
         end
+        convert_to_scale_and_date(ds,fields)
+        ds.update_valid_data
+        fields.each {|f|
+          ds[f].name=f
+        }
+        ds
       end
     end
+  end
+  
   class Excel < SpreadsheetBase 
     class << self
       # Write a Excel spreadsheet based on a dataset
@@ -177,12 +179,25 @@ module Statsample
         }
       end
       private :process_row, :preprocess_row
-      
-      # Returns a dataset based on a xls file
+
+
+
+      # Returns a dataset based on a string formatted as an XLS file would be.
+      # USE:
+      #     ds = Statsample::Excel.parse(File.read("test.xls"), :name => "test.xls")
+      #
+      # You should specify a name for the spreadsheet in the :name option if possible.
+      def parse(content, opts={})
+        read(StringIO.new(content), opts)
+      end
+
+
+
+      # Returns a dataset based on an xls file, or a StringIO representing an xls file
       # USE:
       #     ds = Statsample::Excel.read("test.xls")
       #
-      def read(filename, opts=Hash.new)
+      def read(io_or_filename, opts=Hash.new)
         require 'spreadsheet'
         raise "options should be Hash" unless opts.is_a? Hash
         opts_default={
@@ -202,7 +217,7 @@ module Statsample
         fields_data={}
         ds=nil
         line_number=0
-        book = Spreadsheet.open filename
+        book = Spreadsheet.open io_or_filename
         sheet= book.worksheet worksheet_id
         sheet.each do |row|
           begin
@@ -237,7 +252,7 @@ module Statsample
         fields.each {|f|
           ds[f].name=f
         }
-        ds.name=filename
+        ds.name = io_or_filename.is_a?(StringIO) ? opts[:name] : io_or_filename
         ds
       end
     end

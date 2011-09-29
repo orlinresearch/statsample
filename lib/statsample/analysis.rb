@@ -1,3 +1,5 @@
+warn "[DEPRECATION] Statsample::Analysis is deprecated. Instead, please use SciRuby::Analysis."
+
 require 'statsample/analysis/suite'
 require 'statsample/analysis/suitereportbuilder'
 

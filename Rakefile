@@ -4,9 +4,11 @@
 $:.unshift(File.dirname(__FILE__)+'/lib/')
 
 require 'rubygems'
+require 'rdoc/task'
 require 'statsample'
 require 'hoe'
 Hoe.plugin :git
+Hoe.plugin :gemspec
 
 desc "Ruby Lint"
 task :lint do
@@ -40,7 +42,7 @@ h=Hoe.spec('statsample') do
   #self.testlib=:minitest
 	self.rubyforge_name = "ruby-statsample"
 	self.developer('Claudio Bustos', 'clbustos@gmail.com')
-	self.extra_deps << ["spreadsheet","~>0.6.5"] <<  ["reportbuilder", "~>1.4"] << ["minimization", "~>0.2.0"] << ["fastercsv", ">0"] << ["dirty-memoize", "~>0.0"] << ["extendmatrix","~>0.3.1"] << ["statsample-bivariate-extension", ">0"] << ["rserve-client", "~>0.2.5"] << ["rubyvis", "~>0.4.0"] << ["distribution", "~>0.3"]
+	self.extra_deps << ["spreadsheet","~>0.6.5"] <<  ["reportbuilder", "~>1.4"] << ["minimization", "~>0.2.0"] << ["fastercsv", ">0"] << ["dirty-memoize", "~>0.0"] << ["extendmatrix","~>0.3.1"] << ["statsample-bivariate-extension", ">0"] << ["rserve-client", "~>0.2.5"] << ["rubyvis", "~>0.5.0"] << ["distribution", "~>0.3"]
   
 	self.extra_dev_deps << ["hoe","~>0"] << ["shoulda","~>0"] << ["minitest", "~>2.0"] << ["rserve-client", "~>0"] << ["gettext", "~>0"] << ["mocha", "~>0"] << ["hoe-git", "~>0"]
   
@@ -67,7 +69,7 @@ source code first.
 	self.need_rdoc=false
 end
 
-Rake::RDocTask.new(:docs) do |rd|
+RDoc::Task.new(:docs) do |rd|
   rd.main = h.readme_file
   rd.options << '-d' if (`which dot` =~ /\/dot/) unless
     ENV['NODOT'] || Hoe::WINDOZE
