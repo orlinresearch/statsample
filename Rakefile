@@ -7,9 +7,11 @@ require 'rubygems'
 require 'rdoc/task'
 require 'statsample'
 require 'hoe'
+require 'rdoc'
+
 Hoe.plugin :git
 Hoe.plugin :gemspec
-
+Hoe.plugin :doofus
 desc "Ruby Lint"
 task :lint do
   executable=Config::CONFIG['RUBY_INSTALL_NAME']
@@ -24,6 +26,9 @@ task :release do
 system %{git push origin master}
 end
 
+task "clobber_docs" do
+  # Only to omit warnings
+end
 desc "Update pot/po files."
 task "gettext:updatepo" do
   require 'gettext/tools'
@@ -42,7 +47,11 @@ h=Hoe.spec('statsample') do
   #self.testlib=:minitest
 	self.rubyforge_name = "ruby-statsample"
 	self.developer('Claudio Bustos', 'clbustos@gmail.com')
+<<<<<<< HEAD
 	self.extra_deps << ["spreadsheet","~>0.6.5"] <<  ["reportbuilder", "~>1.4"] << ["minimization", "~>0.2.0"] << ["fastercsv", ">0"] << ["dirty-memoize", "~>0.0"] << ["extendmatrix","~>0.3.1"] << ["statsample-bivariate-extension", ">0"] << ["rserve-client", "~>0.2.5"] << ["rubyvis", "~>0.5.0"] << ["distribution", "~>0.3"]
+=======
+	self.extra_deps << ["spreadsheet","~>0.6.5"] <<  ["reportbuilder", "~>1.4"] << ["minimization", "~>0.2.0"] << ["fastercsv", ">0"] << ["dirty-memoize", "~>0.0"] << ["extendmatrix","~>0.3.1"] << ["statsample-bivariate-extension", ">0"] << ["rserve-client", "~>0.2.5"] << ["rubyvis", "~>0.5"] << ["distribution", "~>0.6"]
+>>>>>>> claudio/master
   
 	self.extra_dev_deps << ["hoe","~>0"] << ["shoulda","~>0"] << ["minitest", "~>2.0"] << ["rserve-client", "~>0"] << ["gettext", "~>0"] << ["mocha", "~>0"] << ["hoe-git", "~>0"]
   
@@ -69,7 +78,12 @@ source code first.
 	self.need_rdoc=false
 end
 
+<<<<<<< HEAD
 RDoc::Task.new(:docs) do |rd|
+=======
+if Rake.const_defined?(:RDocTask)
+Rake::RDocTask.new(:docs) do |rd|
+>>>>>>> claudio/master
   rd.main = h.readme_file
   rd.options << '-d' if (`which dot` =~ /\/dot/) unless
     ENV['NODOT'] || Hoe::WINDOZE
@@ -93,7 +107,7 @@ RDoc::Task.new(:docs) do |rd|
   end
 end
 
-
+end
 desc 'Publish rdocs with analytics support'
 task :publicar_docs => [:clean, :docs] do
   ruby %{agregar_adsense_a_doc.rb}
